@@ -31,24 +31,46 @@ const Results = () => {
 
     const calculate = async () => {
         let tempHands = [];
-        let tempDeck = [];
-        let cards = [];
 
+        let cards = [];
         for (let card of contextDeck) {
-            for (let i = 0; i < card.quantity; i++) {
-                cards.push(card);
+            const qty = Number(card.quantity) || 1;
+            for (let i = 0; i < qty; i++) {
+                cards.push({ ...card, appears: 0 });
             }
         }
+
+        const appearancesMap = new Map();
+        contextDeck.forEach((card) => {
+            const key = card.cardId || card.name;
+            appearancesMap.set(key, { ...card, appears: 0 });
+        });
+
+        // 3. Simulación de robos
         for (let i = 0; i < numberOfHands; i++) {
             cards = lodash.shuffle(cards);
-            let newHand = [cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6]];
+            let newHand = cards.slice(0, 7); // Roba 7 cartas
+
             let isMulligan = true;
+            let uniqueCardsInHand = new Set();
 
             for (let card of newHand) {
-                if (card.cardType === "Pokémon" && card.pokemonType === "Básico" || card.cardType === "Pokemon" && card.pokemonType === "Basic") {
+                const isPokemon = card.cardType === "Pokémon" || card.cardType === "Pokemon";
+                const isBasic = card.pokemonType === "Básico" || card.pokemonType === "Basic" || card.pokemonType === t('basic');
+
+                if (isPokemon && isBasic) {
                     isMulligan = false;
                 }
+
+                const key = card.cardId || card.name;
+                uniqueCardsInHand.add(key);
             }
+
+            uniqueCardsInHand.forEach((key) => {
+                if (appearancesMap.has(key)) {
+                    appearancesMap.get(key).appears += 1;
+                }
+            });
 
             tempHands.push({
                 "hand": newHand,
@@ -56,36 +78,15 @@ const Results = () => {
             });
         }
 
-        //Viendo al cantidad de cartas que sale
-        let tempDeckMap = new Map();
-        for (let hand of tempHands) {
-            let tempHand = new Map();
-            for (let card of hand.hand) {
-                if (tempDeckMap.has(card) && !tempHand.has(card)) {
-                    card.appears = card.appears + 1;
-                    tempDeckMap.set(card);
-                    tempHand.set(card)
-                } else {
-                    card.appears = 1;
-                    tempDeckMap.set(card);
-                    tempHand.set(card)
-                }
-            }
-        }
-        for (let [card, value] of tempDeckMap) {
-            tempDeck.push(card);
-        }
-        let tempNumberOfMulligans = 0;
-        for (let hand of tempHands) {
-            if (hand.isMulligan) {
-                tempNumberOfMulligans++;
-            }
-        }
+        let tempDeck = Array.from(appearancesMap.values());
+
+        let tempNumberOfMulligans = tempHands.filter(hand => hand.isMulligan).length;
+
         setNumberOfMulligans(tempNumberOfMulligans);
         setHands(tempHands);
         setResults(tempDeck);
         setLoading(false);
-    }
+    };
 
 
     useEffect(() => {
@@ -118,14 +119,14 @@ const Results = () => {
                     }
                     {
                         !loading && display &&
-                        <div id='graphViwer' style={{enabled: !display}}>
+                        <div id='graphViwer' style={{ enabled: !display }}>
                             {/* Gráfico múlligans */}
                             <div id='mulligans'>
                                 <GraphMulligans data={{ labels: ["Mulligans", "No mulligans"], datasets: [{ data: [numberOfMulligans, (numberOfHands - numberOfMulligans)], backgroundColor: ["red", "green"], borderColor: "black", borderWith: 2 }] }} />
                             </div>
                             {/* Gráfico cartas */}
                             <div id='cards'>
-                                <GraphCards cards={results} numberOfHands = {numberOfHands} />
+                                <GraphCards cards={results} numberOfHands={numberOfHands} />
                             </div>
                         </div>
                     }
