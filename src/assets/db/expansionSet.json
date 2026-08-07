@@ -199,6 +199,10 @@
   "B1a": "B1a",
   "B2-TCGP": "B2",
   "ASC": "me02.5",
+  "POR":"me03",
+  "CRI": "me04",
+  "PBL": "me05",
   "TK-LATIAS-EX": "tk-ex-latia",
   "TK-LATIOS-EX": "tk-ex-latio"
+
 }

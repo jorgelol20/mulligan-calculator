@@ -1,7 +1,17 @@
 import React, { Fragment } from 'react';
 import Card from './Card';
+import CardInfo from './CardInfo';
 import './Hand.css';
+import { useState } from 'react';
 const Hand = ({ hand }) => {
+
+    const [actualCardInfo, setActualCard] = useState(null);
+
+    const setNewCardInfo = (newCardInfo) => {
+        setActualCard(newCardInfo);
+    }
+
+
     return (
         <Fragment>
             <div className='hand'>
@@ -17,8 +27,14 @@ const Hand = ({ hand }) => {
                                 loading="lazy"
                                 key={Math.random().toString(36).substring(2, 15)}
                                 cardInfo={card}
+                                setNewCardInfo={setNewCardInfo}
                             />
                         })
+                    }
+                </div>
+                <div className='cardInfo'>
+                    {
+                        actualCardInfo !== null && <CardInfo cardInfo={actualCardInfo} setNewCardInfo={setNewCardInfo} />
                     }
                 </div>
             </div>
