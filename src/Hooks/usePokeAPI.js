@@ -5,7 +5,7 @@ import { errorContext } from '../context/ErrorProvider.jsx';
 import { useTranslation } from 'react-i18next';
 
 const usePokeAPI = (deck) => {
-    const {t, i18n} = useTranslation();
+    const { t, i18n } = useTranslation();
     //Utils
     const tcgdex = new TCGdex(i18n.language);
     const expansions = expansionDictionary;
@@ -155,7 +155,7 @@ const usePokeAPI = (deck) => {
                     if (card.name) {
                         return card;
                     }
-                    if(card[0].id === "sv04-175"){
+                    if (card[0].id === "sv04-175") {
                         card[0].category = "Pokémon";
                         card[0].stage = t('basic');
                     }
@@ -163,7 +163,7 @@ const usePokeAPI = (deck) => {
                         case "Pokémon":
                         case "Pokemon":
                             if (card[0].abilities) {
-                                if(card[0].id === "me01-028"){
+                                if (card[0].id === "me01-028") {
                                     card[0].stage = t('basic');
                                 }
                                 return {
@@ -219,7 +219,7 @@ const usePokeAPI = (deck) => {
     };
     useEffect(() => {
         getDeckAPI(deck)
-    }, [deck,i18n.language])
+    }, [deck, i18n.language])
 
     return { deckAPI, loading };
 }
