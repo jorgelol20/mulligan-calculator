@@ -11,7 +11,7 @@ const CustomizedContent = (props) => {
       <rect
         x={x}
         y={y}
-        width={width}z
+        width={width}
         height={height}
         style={{
           fill: `hsl(${(index * (360 / root.children.length))}, 60%, 50%)`,
