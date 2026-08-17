@@ -20,7 +20,7 @@ function App() {
     i18n.changeLanguage(lang);
   };
   useEffect(()=>{
-        i18n.language.includes("es") ? changeLanguage('es') : changeLanguage('en');
+         window.location.replace("https://ptcg-tools.vercel.app")
     },[])
 
   return (
